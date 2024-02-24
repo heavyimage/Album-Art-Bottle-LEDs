@@ -18,27 +18,30 @@ By combining code for API access, dominant color extraction, NeoPixel updates an
 * A CLI tool for checking the currently playing song (eg mpc/mpd)
 
 ### Workflow
-The server accepts "palette" updates which are a list of `NUM_LED` colors.
 
-The client does most of the heavy lifting by:
+I really wish the pico could do all of the image processing but jpeg decoding let alone kmeans is probably a tall order...so I arrived at this slightly hacky client/server architecture.
+
+The client code (running on a 'real' computer) does most of the heavy lifting by:
 * Checking last.fm for the most recently scrobbled track
 * Downloading it's cover art
 * Extract the `NUM_COLORS` most common colors
-* Padding that out `NUM_LEDS` and sending the udpdate to the server.
+* Padding that out `NUM_LEDS` and sending that over a socket to the client.
 
-* I really wish the pico could do all of the image processing but jpeg decoding let alone kmeans is probably a tall order...
+The server code, running on the pico, is resonsible for:
+* Accepting "palette" updates (which are a list of `NUM_LED` RGB values)
+* Managing the LED colors
 
 ### Running the project
 * Have a look at the constants at the top of the client / server and see if you wanna make any adjustments
 * Install the libraries in `requirements.txt` on your client
 * Use thonny or something like it to run the server code on the pi
 	* It'll glow green when it's ready for a client connection
-* Run the client code (once you add the API key and username) on a 'real' computer
+* Run the client code (once you add the API key and username) on a 'real' computer to send palettes to the server
 
 ### Good Stuff
 * Gentle animation is nice
 * The updates are pretty slick
-* The palette is updated by the client; if the client does, the palette will keep going forever!
+* Once a palette has been recieved it'll keep on displaying it until a new one is recieved.
 * Pretty pleased by the threading code on the pico for handling animation and network updates :-)
 
 ### Future Work

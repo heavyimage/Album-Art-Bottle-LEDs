@@ -6,7 +6,7 @@ I got a [Pimoroni Wireless Plasma Kit](https://shop.pimoroni.com/products/wirele
 
 Album art is often iconic and I thought it'd be cool to get a subtle hint of the colors of my favorite album covers as their songs play!
 
-I realized that last.fm shares album art over it's API and as a long time member, that seemed like a great place to start.
+I realized that last.fm shares album art over its API and as a long time member, that seemed like a great place to start.
 
 By combining code for API access, dominant color extraction, NeoPixel updates and socket networking I was able to throw this together in an evening.
 

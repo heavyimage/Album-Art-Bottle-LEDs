@@ -1,4 +1,4 @@
-# Album art bottle LEDS
+# Album art bottle LEDs
 
 ![Picture of project on desk](docs/hero.jpeg)
 

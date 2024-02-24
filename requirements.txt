@@ -1,0 +1,5 @@
+colr
+dotenv
+sklearn
+numpy
+PIL

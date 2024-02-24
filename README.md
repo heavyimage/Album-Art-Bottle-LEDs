@@ -40,3 +40,7 @@ The client does most of the heavy lifting by:
 * The updates are pretty slick
 * The palette is updated by the client; if the client does, the palette will keep going forever!
 * Pretty pleased by the threading code on the pico for handling animation and network updates :-)
+
+### Future Work
+* Would be AWESOME to change the animation speed based on the BPM of the song but this isn't available in the last.fm API!  I'd probably need to bridge in another API...
+* It's possible having all the LEDs stuff into a bottle isn't given the best sense of the palette -- might look cool mounted on a wall or somewhere else!

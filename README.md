@@ -27,6 +27,10 @@ The client code (running on a 'real' computer) does most of the heavy lifting by
 * Extract the `NUM_COLORS` most common colors
 * Padding that out to `NUM_LEDS` and sending the udpdate to the server.
 
+Here's what that looks like, in the client's terminal; note the track name, album art visualization and palette preview:
+
+![Picture of the visualization in terminal](docs/palette.png)
+
 The server code, running on the pico, is resonsible for:
 * Accepting "palette" updates (which are a list of `NUM_LED` RGB values)
 * Managing the LED colors

@@ -1,5 +1,5 @@
 colr
-dotenv
+python-dotenv
 sklearn
 numpy
 PIL

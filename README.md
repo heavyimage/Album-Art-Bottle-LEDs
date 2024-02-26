@@ -25,7 +25,7 @@ The client code (running on a 'real' computer) does most of the heavy lifting by
 * Checking last.fm for the most recently scrobbled track
 * Downloading it's cover art
 * Extract the `NUM_COLORS` most common colors
-* Padding that out `NUM_LEDS` and sending that over a socket to the client.
+* Padding that out to `NUM_LEDS` and sending the udpdate to the server.
 
 The server code, running on the pico, is resonsible for:
 * Accepting "palette" updates (which are a list of `NUM_LED` RGB values)

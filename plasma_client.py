@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import PIL
 from PIL import Image
 import requests
 import socket
@@ -122,11 +123,18 @@ def term_display(payload, img, colors):
     # Output the song title / artist
     print("")
     info = "%s -- %s" % (payload['title'], payload['artist'])
-    width, _ = img.size
-    print(info.center(width*2, ' '))
 
-    # Display in terminal for sanity checking!
-    print_imgage_in_term(img)
+    if img == None:
+        print(info)
+        print("Can't fetch / display %s" % payload['img_url'])
+
+    else:
+        # center text based on image width
+        width, _ = img.size
+        print("\t%s" % info.center(width*2, ' '))
+
+        # Display image in terminal for sanity checking!
+        print_imgage_in_term(img)
 
     # Display the color palette
     print("\n")
@@ -142,11 +150,20 @@ def generate_palette():
     payload = get_info_from_last_scrobble()
 
     # Download and pythonify the album art
-    img_data = requests.get(payload['img_url'], stream=True).raw
-    img = Image.open(img_data).convert("RGB")
+    try:
+        img_data = requests.get(payload['img_url'], stream=True).raw
+        img = Image.open(img_data).convert("RGB")
 
-    # Extract the most common NUM_COLORS colors!
-    colors = [[int(i) for i in c] for c in extract_dominant_colors(img)]
+        # Extract the most common NUM_COLORS colors!
+        colors = [[int(i) for i in c] for c in extract_dominant_colors(img)]
+
+    except requests.exceptions.MissingSchema:
+        img = None
+        colors = [[0, 0, 255] for _ in range(NUM_COLORS)]
+
+    except PIL.UnidentifiedImageError:
+        img = None
+        colors = [[128, 128, 128] for _ in range(NUM_COLORS)]
 
     # Exapand that list to the number of LEDS
     colors = list(islice(cycle(colors), NUM_LEDS))

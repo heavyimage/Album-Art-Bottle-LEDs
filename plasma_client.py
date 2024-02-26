@@ -99,13 +99,17 @@ def print_imgage_in_term(image):
 
     width, height = image.size
     for index, character in enumerate(pixel_values):
+        #convert chararacter to colorchar
         if not isinstance(character, (tuple, list)):
             continue
         r, g, b = character
+        colorchar = str(Colr().rgb(r, g, b, "\u2584"))
+
         if index % width == 0:
-            print("")
-        print(Colr().rgb(r, g, b, "\u2584"), end="")
-        print(Colr().rgb(r, g, b, "\u2584"), end="")
+            print("\n\t", end="")
+
+        # duplicate colorchar so it produces a squarer image
+        print("".join([colorchar]*2), end="")
     print("")
 
 def term_display(payload, img, colors):
@@ -140,7 +144,7 @@ def term_display(payload, img, colors):
     print("\n")
     pal_str = "".join(
             [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in colors])
-    print(pal_str)
+    print("        \t", pal_str)
     print("\n")
 
 def generate_palette():

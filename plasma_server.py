@@ -63,11 +63,12 @@ def net_thread():
         # Receive and parse the request
         request = s.recvfrom(2048)
         
+        data = json.loads(request[0])
+        
         # try to acquire lock - wait if in use
         lock.acquire()
         
         # Update the Palette!
-        data = json.loads(request[0])
         global palette
         palette = data
 

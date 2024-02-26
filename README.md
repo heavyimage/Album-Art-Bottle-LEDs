@@ -40,6 +40,7 @@ The server code, running on the pico, is resonsible for:
 
 ### Good Stuff
 * Gentle animation is nice
+* Because the pico has wifi, it can be anywhere in your home!  On a high shelf, even.  Wireless is cool :-)
 * The updates are pretty slick
 * Once a palette has been recieved it'll keep on displaying it until a new one is recieved.
 * Pretty pleased by the threading code on the pico for handling animation and network updates :-)

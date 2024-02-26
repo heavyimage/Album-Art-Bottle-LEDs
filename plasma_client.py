@@ -123,7 +123,6 @@ def term_display(payload, img, colors):
 
     # Clear
     os.system("clear")
-
     # Output the song title / artist
     print("")
     info = "%s -- %s" % (payload['title'], payload['artist'])

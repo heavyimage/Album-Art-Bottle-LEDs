@@ -180,11 +180,15 @@ def generate_palette():
 
     return colors
 
+def send_to_server(server, data):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.sendto(data, server)
+    sock.close()
+
 def main():
     """ Entry Point """
 
-    # Create socket and get address of server
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    # get the address of server
     server = socket.getaddrinfo(SERVER_IP, PORT)[0][-1]
 
     last_song = None
@@ -207,9 +211,15 @@ def main():
             # Get the palette
             colors = generate_palette()
 
-            # convert to json + send to the server!
-            data_string = json.dumps(colors)
-            sock.sendto(data_string.encode(), server)
+            # convert to json...
+            data_string = json.dumps(colors).encode()
+
+            # ...and send to the server!
+            #
+            # by putting this in the while loop it'll create the socket
+            # on demand which means it'll work if the client started
+            # after the server!
+            send_to_server(server, data_string)
 
             # update the last song!
             last_song = song

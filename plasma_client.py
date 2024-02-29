@@ -150,7 +150,7 @@ def get_info_from_last_scrobble():
 
     return payload
 
-def print_imgage_in_term(image):
+def print_image_in_term(image):
     """ show a preview of the album in the terminal
 
         based on:
@@ -199,7 +199,7 @@ def term_display(payload, img, colors):
         print("\t%s" % info.center(width*2, ' '))
 
         # Display image in terminal for sanity checking!
-        print_imgage_in_term(img)
+        print_image_in_term(img)
 
     # Display the color palette
     print("\n")

@@ -86,7 +86,24 @@ def get_info_from_last_scrobble():
     payload['artist'] = artist
     payload['img_url'] = img_url
 
+    # Try to fetch the bpm if mbid is present and and acousticbrainz has it!
+    if last_track['mbid']:
+        payload['mbid'] = last_track['mbid']
+        payload['bpm'] = get_bpm(last_track['mbid'])
+
     return payload
+
+def get_bpm(mbid):
+    """ Given the mbid of a song, get it's bpm! """
+
+    base_url = 'https://acousticbrainz.org'
+    endpoint ='/api/v1/{mbid}/high-level'
+    full_url = base_url+endpoint.format(mbid=mbid)
+    data = requests.get(full_url).json()
+    if 'metadata' not in data:
+        return []
+    bpm_list = data['metadata']['tags']['bpm']
+    return bpm_list
 
 def print_imgage_in_term(image):
     """ show a preview of the album in the terminal
@@ -145,6 +162,14 @@ def term_display(payload, img, colors):
             [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in colors])
     print("        \t", pal_str)
     print("\n")
+    if "mbid" in payload:
+        print("mbid: %s" % payload['mbid'])
+    else:
+        print("no mbid :-(")
+    if "bpm" in payload:
+        print("BPM: %s" % payload['bpm'])
+    else:
+        print("no bpm :-(")
 
 def generate_palette():
     """ The 'main' routine which updates the display """

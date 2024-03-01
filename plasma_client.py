@@ -174,7 +174,7 @@ def print_image_in_term(image):
         print("".join([colorchar]*2), end="")
     print("")
 
-def term_display(payload, img, colors):
+def term_display(payload, img, colors, methods):
     """ A function to handle all the terminal drawing:
 
         * Clearing the terminal
@@ -201,12 +201,21 @@ def term_display(payload, img, colors):
         # Display image in terminal for sanity checking!
         print_image_in_term(img)
 
-    # Display the color palette
+    # Display all the extracted palettes
     print("\n")
+    for key in sorted(methods):
+        method = methods[key]
+        display_pal(img, method)
+
+def display_pal(img, func):
+    """ Helper function to display palettes! """
+    pal = func(img)
+    pal = list(islice(cycle(pal), NUM_LEDS))
+    if SORT_COLORS:
+        pal = sorted(pal, key = lambda rgb: sum(rgb))
     pal_str = "".join(
-            [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in colors])
+            [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in pal])
     print("        \t", pal_str)
-    print("\n")
 
 def generate_palette(methods):
     """ The 'main' routine which updates the display """
@@ -239,7 +248,7 @@ def generate_palette(methods):
         colors = sorted(colors, key = lambda rgb: sum(rgb))
 
     # Show everything in the terminal
-    term_display(payload, img, colors)
+    term_display(payload, img, colors, methods)
 
     return colors
 

@@ -6,3 +6,4 @@ PIL
 requests
 sklearn
 colour-science
+colorthief

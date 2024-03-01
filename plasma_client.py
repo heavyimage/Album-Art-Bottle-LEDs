@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from sklearn.cluster import KMeans, AgglomerativeClustering
 import colour as cl
 from colour.models import RGB_COLOURSPACE_sRGB
+from colorthief import ColorThief
 
 # Store your APP_API_KEY and APP_USER in a .env file :-)
 load_dotenv()
@@ -109,6 +110,24 @@ def extract_dominant_colors3(image):
         centroids_ag.append(list(lab_to_rgb(center).astype(int)))
 
     return centroids_ag
+
+def extract_dominant_colors4(image):
+    """ extract the dominant colors using MMCQ
+
+        based on code from:
+        https://github.com/fengsp/color-thief-py
+    """
+
+    # Monkey patch the init method so we can set the image data directly...
+    def fake_constructor(self):
+        self.image = None
+    ColorThief.__init__ = fake_constructor
+    color_thief = ColorThief()
+    color_thief.image = image
+
+    # Generate a palette using this library!
+    palette = color_thief.get_palette(color_count=NUM_COLORS, quality=1)
+    return palette
 
 def get_info_from_last_scrobble():
     """ Get the most recent track from a user's last.fm profile
@@ -271,6 +290,7 @@ def main():
             1: extract_dominant_colors1,
             2: extract_dominant_colors2,
             3: extract_dominant_colors3,
+            4: extract_dominant_colors4,
     }
 
     # Forever...

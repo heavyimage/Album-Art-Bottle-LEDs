@@ -183,8 +183,9 @@ def term_display(payload, img, colors, methods):
         * The palette that is sent to the server
     """
 
-    # Clear
+    # Clear the screen
     os.system("clear")
+
     # Output the song title / artist
     print("")
     info = "%s -- %s" % (payload['title'], payload['artist'])
@@ -192,14 +193,14 @@ def term_display(payload, img, colors, methods):
     if img == None:
         print(info)
         print("Can't fetch / display %s" % payload['img_url'])
+        return
 
-    else:
-        # center text based on image width
-        width, _ = img.size
-        print("\t%s" % info.center(width*2, ' '))
+    # center text based on image width
+    width, _ = img.size
+    print("\t%s" % info.center(width*2, ' '))
 
-        # Display image in terminal for sanity checking!
-        print_image_in_term(img)
+    # Display image in terminal for sanity checking!
+    print_image_in_term(img)
 
     # Display all the extracted palettes
     print("\n")

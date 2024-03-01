@@ -1,18 +1,18 @@
 #!/usr/bin/python3
 
-import PIL
-from PIL import Image
-import requests
 import socket
 import json
 import time
 import os
-from colr import Colr
-import numpy as np
-from sklearn.cluster import KMeans
-from itertools import cycle, islice
 import subprocess
+from itertools import cycle, islice
+import requests
+import numpy as np
+import PIL
+from PIL import Image
+from colr import Colr
 from dotenv import load_dotenv
+from sklearn.cluster import KMeans
 
 # Store your APP_API_KEY and APP_USER in a .env file :-)
 load_dotenv()

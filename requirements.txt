@@ -3,3 +3,6 @@ python-dotenv
 sklearn
 numpy
 PIL
+requests
+sklearn
+colour-science

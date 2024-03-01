@@ -12,7 +12,9 @@ import PIL
 from PIL import Image
 from colr import Colr
 from dotenv import load_dotenv
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
+import colour as cl
+from colour.models import RGB_COLOURSPACE_sRGB
 
 # Store your APP_API_KEY and APP_USER in a .env file :-)
 load_dotenv()
@@ -26,14 +28,35 @@ SERVER_IP = "192.168.0.92"          # ip of your pico
 SORT_COLORS = True                  # Try enabling/disabling
 SONG_CMD = 'mpc current'            # replace based on your setup!
 SLEEP_TIME = 2                      # How frequently you check for a new song
+COLOR_EXT_METHOD = 3                # Which color extraction method to use
 
 # You shouldn't need to change these...
 ENDPOINT = 'https://ws.audioscrobbler.com/2.0/'
 USER_AGENT = 'Dataquest'
 SIZE = "small"
 PORT = 10191 # fear is the mind killer
+ILLUMINANT = np.array([0.34570, 0.35850])
 
-def extract_dominant_colors(image):
+
+
+# A few utility functions for converting between lab, rgb, and xyz
+def rgb_to_xyz(p):
+    """ converts from rgb to xyz """
+    return cl.RGB_to_XYZ(p, RGB_COLOURSPACE_sRGB, ILLUMINANT, "Bradford")
+
+def xyz_to_rgb(p):
+    """ converts from xyz to rgb """
+    return cl.XYZ_to_RGB(p, RGB_COLOURSPACE_sRGB, ILLUMINANT, "Bradford")
+
+def rgb_to_lab(p):
+    """ converts from rgb to lab """
+    return cl.XYZ_to_Lab(rgb_to_xyz(p))
+
+def lab_to_rgb(p):
+    """ converts from lab to rgb """
+    return xyz_to_rgb(cl.Lab_to_XYZ(p))
+
+def extract_dominant_colors1(image):
     """ Extract the dominant colors from an image
 
         Based on code from here:
@@ -46,7 +69,46 @@ def extract_dominant_colors(image):
     kmeans = KMeans(n_clusters=NUM_COLORS, n_init='auto')
     kmeans.fit(pixels)
     colors = kmeans.cluster_centers_
-    return colors.astype(int)
+    return [list(c) for c in colors.astype(int)]
+
+def extract_dominant_colors2(image):
+    """ Extract the dominant colors using kmeans in lab space
+
+        based on code from:
+        https://tatasz.github.io/dominant_colors/
+    """
+    pixels = image.getdata()
+    pixels = np.float32(pixels)
+    kmeans_lab = KMeans(n_clusters=NUM_COLORS, n_init='auto')
+    kmeans_lab = kmeans_lab.fit(rgb_to_lab(pixels))
+    centroids_lab = kmeans_lab.cluster_centers_
+    centroids_lab = lab_to_rgb(centroids_lab)
+    return [list(c) for c in centroids_lab.astype(int)]
+
+def extract_dominant_colors3(image):
+    """ Extract the dominant colors using AgglomerativeClustering
+
+        based on code from:
+        https://tatasz.github.io/dominant_colors/
+    """
+
+    # convert to lab
+    pixels = image.getdata()
+    pixels = np.float32(pixels)
+    pixels_lab = rgb_to_lab(pixels)
+
+    # fit clusters
+    ag_clusters = AgglomerativeClustering(
+            n_clusters=NUM_COLORS, metric='l1', linkage='complete')
+    ag_clusters_fit = ag_clusters.fit(rgb_to_lab(pixels))
+
+    # get centroids
+    centroids_ag = []
+    for i in range(NUM_COLORS):
+        center = pixels_lab[ag_clusters_fit.labels_ == i].mean(0)
+        centroids_ag.append(list(lab_to_rgb(center).astype(int)))
+
+    return centroids_ag
 
 def get_info_from_last_scrobble():
     """ Get the most recent track from a user's last.fm profile
@@ -146,7 +208,7 @@ def term_display(payload, img, colors):
     print("        \t", pal_str)
     print("\n")
 
-def generate_palette():
+def generate_palette(methods):
     """ The 'main' routine which updates the display """
 
     # get the artist, title and album art!
@@ -157,8 +219,9 @@ def generate_palette():
         img_data = requests.get(payload['img_url'], stream=True).raw
         img = Image.open(img_data).convert("RGB")
 
-        # Extract the most common NUM_COLORS colors!
-        colors = [[int(i) for i in c] for c in extract_dominant_colors(img)]
+        # Extract the most common NUM_COLORS colors using COLOR_EXT_METHOD
+        method = methods[COLOR_EXT_METHOD]
+        colors = [[int(i) for i in c] for c in method(img)] # convert int32
 
     except requests.exceptions.MissingSchema:
         img = None
@@ -193,6 +256,13 @@ def main():
 
     last_song = None
 
+    # define all the extraction methods
+    methods = {
+            1: extract_dominant_colors1,
+            2: extract_dominant_colors2,
+            3: extract_dominant_colors3,
+    }
+
     # Forever...
     while True:
 
@@ -209,7 +279,7 @@ def main():
             print("Updating...")
 
             # Get the palette
-            colors = generate_palette()
+            colors = generate_palette(methods)
 
             # convert to json...
             data_string = json.dumps(colors).encode()

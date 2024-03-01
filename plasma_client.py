@@ -23,7 +23,7 @@ load_dotenv()
 API_KEY = os.getenv("APP_API_KEY")  # a last.fm API_KEY
 USER = os.getenv("APP_USER")        # a last.fm username
 NUM_LEDS = 50                       # full number of LEDs
-NUM_COLORS = 5                      # number of colors to extract
+NUM_COLORS = 6                      # number of colors to extract
 SERVER_IP = "192.168.0.92"          # ip of your pico
 SORT_COLORS = True                  # Try enabling/disabling
 SONG_CMD = 'mpc current'            # replace based on your setup!

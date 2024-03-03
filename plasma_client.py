@@ -28,7 +28,7 @@ NUM_COLORS = 6                      # number of colors to extract
 SERVER_IP = "192.168.0.92"          # ip of your pico
 SORT_COLORS = True                  # Try enabling/disabling
 SONG_CMD = 'mpc current'            # replace based on your setup!
-SLEEP_TIME = 2                      # How frequently you check for a new song
+SLEEP_TIME = 1                      # How frequently you check for a new song
 COLOR_EXT_METHOD = 3                # Which color extraction method to use
 
 # You shouldn't need to change these...

@@ -31,6 +31,8 @@ Here's what that looks like, in the client's terminal; note the track name, albu
 
 ![Picture of the visualization in terminal](docs/palette.png)
 
+(There are now 4 palette extraction algorithms and all of them are previewed though only one is sent to the server!)
+
 The server code, running on the pico, is resonsible for:
 * Accepting "palette" updates (which are a list of `NUM_LED` RGB values)
 * Managing the LED colors
@@ -43,6 +45,7 @@ The server code, running on the pico, is resonsible for:
 * Run the client code (once you add the API key and username) on a 'real' computer to send palettes to the server
 
 ### Good Stuff
+* Proud of janky palette transition logic; exciting when songs switch!
 * Gentle animation is nice
 * Because the pico has wifi, it can be anywhere in your home!  On a high shelf, even.  Wireless is cool :-)
 * The updates are pretty slick

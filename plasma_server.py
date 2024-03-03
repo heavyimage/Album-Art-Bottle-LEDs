@@ -11,7 +11,8 @@ import uasyncio
 # Adjust these based on your hardware / preferences
 PORT = 10191
 NUM_LEDS = 50
-ANIMATION_TIME = 0.5
+ANIMATION_DELAY = 1
+TRANSITION_DELAY = 0.005
 
 # Initialize WS2812 / NeoPixel™ LEDs
 # Normally would prefer to do this in main but need it at this scope for 
@@ -22,7 +23,8 @@ led_strip.start()
 
 # Define some global variables
 lock = None
-palette = [[0, 255, 0] for _ in range(NUM_LEDS)]
+current_palette = [[0, 255, 0] for _ in range(NUM_LEDS)]
+new_palette = None
 
 def status_handler(mode, status, ip):
     """ reports wifi connection status; taken from weather example """
@@ -69,8 +71,8 @@ def net_thread():
         lock.acquire()
         
         # Update the Palette!
-        global palette
-        palette = data
+        global new_palette
+        new_palette = data
 
         # release lock
         lock.release()
@@ -79,22 +81,59 @@ def net_thread():
 def display_thread():
     """ Handle the LED updates """
     global lock
+    global new_palette
+    global current_palette
     
     counter = 0
     while True:
         
         # try to acquire lock - wait if in use
         lock.acquire()
-        
-        # Update the LEDs
-        global palette
-        for i, (r, g, b) in enumerate(palette):
-            led_strip.set_rgb((i + counter) % NUM_LEDS, r, g, b)
+
+        # If there hasn't been a recent update:
+        if new_palette == None:
+            # release lock
+            lock.release()
+            for i, (r, g, b) in enumerate(current_palette):
+                led_strip.set_rgb((i + counter) % NUM_LEDS, r, g, b)
+                
+        # If there has we enter the "transition" cycle
+        else:
+            # Make a copy of the palette and release the lock!
+            new_pal = new_palette.copy()
+            lock.release()
             
-        # release lock
-        lock.release()
+            # calculate the maximum number of steps we'll need -- the max distance between a value in the old and new palettes
+            max_steps = max([abs(current_palette[i][c]-new_pal[i][c]) for c in range(3) for i in range(NUM_LEDS)])
         
-        time.sleep(ANIMATION_TIME)
+            # for each step...
+            for step in range(max_steps):
+                
+                # for each LED
+                for i in range(NUM_LEDS):
+                    
+                    # For each color in that LED...
+                    for c in range(3):
+                        # move us towards the new value!
+                        if current_palette[i][c] > new_pal[i][c]:
+                            current_palette[i][c] -= 1
+                        elif current_palette[i][c] < new_pal[i][c]:
+                            current_palette[i][c] += 1
+                    # Display the LED's new value
+                    led_strip.set_rgb((i + counter) % NUM_LEDS, current_palette[i][0], current_palette[i][1], current_palette[i][2])
+                    
+                # ater the step is done, sleep a bit so we can see the transition
+                time.sleep(TRANSITION_DELAY)
+                counter += 1
+                
+                
+            # set new_palette to None!
+            lock.acquire()
+            new_palette = None
+            lock.release()
+
+        
+        time.sleep(ANIMATION_DELAY)
         counter += 1
 
 def main():

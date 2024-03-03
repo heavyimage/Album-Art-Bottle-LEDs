@@ -23,7 +23,6 @@ led_strip.start()
 
 # Define some global variables
 lock = None
-current_palette = [[0, 255, 0] for _ in range(NUM_LEDS)]
 new_palette = None
 
 def status_handler(mode, status, ip):
@@ -82,7 +81,9 @@ def display_thread():
     """ Handle the LED updates """
     global lock
     global new_palette
-    global current_palette
+    
+    current_palette = [[0, 255, 0] for _ in range(NUM_LEDS)]
+    new_pal = None
     
     counter = 0
     while True:
@@ -90,28 +91,31 @@ def display_thread():
         # try to acquire lock - wait if in use
         lock.acquire()
 
-        # If there hasn't been a recent update:
-        if new_palette == None:
+        # If there hasn't been a recent update
+        if not new_palette:
             # release lock
             lock.release()
-            for i, (r, g, b) in enumerate(current_palette):
-                led_strip.set_rgb((i + counter) % NUM_LEDS, r, g, b)
-                
-        # If there has we enter the "transition" cycle
+        
+        # Otherwise!
         else:
             # Make a copy of the palette and release the lock!
             new_pal = new_palette.copy()
+            # release lock
             lock.release()
             
-            # calculate the maximum number of steps we'll need -- the max distance between a value in the old and new palettes
-            max_steps = max([abs(current_palette[i][c]-new_pal[i][c]) for c in range(3) for i in range(NUM_LEDS)])
-        
-            # for each step...
-            for step in range(max_steps):
+            # If we've completed the transition
+            if new_pal == current_palette:
+                # set new_palette to None!
+                lock.acquire()
+                new_palette = None
+                lock.release()
+                new_pal = None
                 
+            # We're still mid-transition
+            else:
                 # for each LED
                 for i in range(NUM_LEDS):
-                    
+                
                     # For each color in that LED...
                     for c in range(3):
                         # move us towards the new value!
@@ -119,22 +123,18 @@ def display_thread():
                             current_palette[i][c] -= 1
                         elif current_palette[i][c] < new_pal[i][c]:
                             current_palette[i][c] += 1
-                    # Display the LED's new value
-                    led_strip.set_rgb((i + counter) % NUM_LEDS, current_palette[i][0], current_palette[i][1], current_palette[i][2])
-                    
-                # ater the step is done, sleep a bit so we can see the transition
-                time.sleep(TRANSITION_DELAY)
-                counter += 1
-                
-                
-            # set new_palette to None!
-            lock.acquire()
-            new_palette = None
-            lock.release()
 
         
-        time.sleep(ANIMATION_DELAY)
+        # finally, draw the LEDs
+        for i, (r, g, b) in enumerate(current_palette):
+            led_strip.set_rgb((i + counter) % NUM_LEDS, r, g, b)
+            
+        if new_pal == None:
+            time.sleep(ANIMATION_DELAY)
+        else:
+            time.sleep(TRANSITION_DELAY)
         counter += 1
+
 
 def main():
     """ Entry Point """

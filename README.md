@@ -55,3 +55,32 @@ The server code, running on the pico, is resonsible for:
 ### Future Work
 * Would be AWESOME to change the animation speed based on the BPM of the song but this isn't available in the last.fm API!  I'd probably need to bridge in another API...
 * It's possible having all the LEDs stuff into a bottle isn't given the best sense of the palette -- might look cool mounted on a wall or somewhere else!
+
+## Phase 2
+
+Here are a few ideas I have for future improvements...
+
+* client:
+    * Automatically choose the best number of clusters?
+    * TUI interace:
+        * *q* for quit
+        * *1,2,3,4* etc for different color extraction methods?
+    * cache recent songs:
+        * can't really cache checks with last.fm; move to a model where we search last.fm for the song on change?
+    * API retries?
+		* more interesting fake patterns if missing a song!
+    * extract hues rather than brightnesses?
+    * detect bpm?
+        * <https://support.last.fm/t/is-there-a-showcase-of-api-uses/89878/8>
+        * <https://acousticbrainz.org/099b148e-fe99-4b79-be6e-5078e4bb7415?n=1>
+
+* server:
+    * More interesting animation patterns?
+	* create multiple "endpoints" for various controls
+		* changing animation speed?
+		* explicitly set LEDs
+		* test pattern?
+
+* more interesting vessel
+   * train lantern?
+

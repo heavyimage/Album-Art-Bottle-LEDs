@@ -1,9 +1,8 @@
-colr
-python-dotenv
-sklearn
-numpy
-PIL
-requests
-sklearn
-colour-science
+PILLOW
 colorthief
+colour-science
+colr
+numpy
+python-dotenv
+requests
+scikit-learn

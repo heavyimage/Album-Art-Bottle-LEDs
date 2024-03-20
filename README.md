@@ -85,6 +85,7 @@ Here are a few ideas I have for future improvements...
    * train lantern?
 
 ### Bugs to fix:
+```
 Traceback (most recent call last):
   File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1496, in get_escape_code
     escapecode = converter(value)
@@ -135,8 +136,9 @@ colr.colr.InvalidColr: Expecting colr name/value:
     rgb   (0-255, 0-255, 0-255),
     value (0-255)
     Got: (256, 180, 212)
+```
 
-
+```
 Traceback (most recent call last):
   File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1496, in get_escape_code
     escapecode = converter(value)
@@ -187,4 +189,4 @@ colr.colr.InvalidColr: Expecting colr name/value:
     rgb   (0-255, 0-255, 0-255),
     value (0-255)
     Got: (256, 252, 252)
-
+```

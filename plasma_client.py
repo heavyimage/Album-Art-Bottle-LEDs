@@ -16,6 +16,7 @@ from sklearn.cluster import KMeans, AgglomerativeClustering
 import colour as cl
 from colour.models import RGB_COLOURSPACE_sRGB
 from colorthief import ColorThief
+from requests.adapters import HTTPAdapter, Retry
 
 # Store your APP_API_KEY and APP_USER in a .env file :-)
 load_dotenv()
@@ -237,7 +238,7 @@ def display_pal(img, func):
             [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in pal])
     print("        \t", pal_str)
 
-def generate_palette(methods):
+def generate_palette(session, methods):
     """ The 'main' routine which updates the display """
 
     # get the artist, title and album art!
@@ -245,7 +246,7 @@ def generate_palette(methods):
 
     # Download and pythonify the album art
     try:
-        img_data = requests.get(payload['img_url'], stream=True).raw
+        img_data = session.get(payload['img_url'], stream=True).raw
         img = Image.open(img_data).convert("RGB")
 
         # Extract the most common NUM_COLORS colors using COLOR_EXT_METHOD
@@ -293,6 +294,14 @@ def main():
             4: extract_dominant_colors4,
     }
 
+    # Setup the session
+    session = requests.Session()
+    retries = Retry(total=5,
+                    backoff_factor=0.1,
+                    status_forcelist=[ 500, 502, 503, 504 ])
+
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+
     # Forever...
     while True:
 
@@ -309,7 +318,7 @@ def main():
             print("Updating...")
 
             # Get the palette
-            colors = generate_palette(methods)
+            colors = generate_palette(session, methods)
 
             # convert to json...
             data_string = json.dumps(colors).encode()

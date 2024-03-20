@@ -87,106 +87,19 @@ Here are a few ideas I have for future improvements...
 ### Bugs to fix:
 ```
 Traceback (most recent call last):
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1496, in get_escape_code
-    escapecode = converter(value)
-                 ^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 324, in format_fore
-    return _format_code(
-           ^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 285, in _format_code
-    raise InvalidColr(
-colr.colr.InvalidColr: RGB value for fore not in range 0-255.
-    Got: (256, 180, 212)
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 331, in <module>
+  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 3
+40, in <module>
     main()
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 312, in main
-    colors = generate_palette(methods)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 271, in generate_palette
-    term_display(payload, img, colors, methods)
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 228, in term_display
-    display_pal(img, method)
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 237, in display_pal
-    [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in pal])
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 237, in <listcomp>
-    [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in pal])
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1852, in rgb
-    return self.chained(text=text, fore=(r, g, b), back=back, style=style)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1364, in chained
-    self.color(text=text, fore=fore, back=back, style=style),
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1410, in color
-    self.color_code(fore=fore, back=back, style=style),
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1427, in color_code
-    code = self.get_escape_code(stype, stylearg)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1498, in get_escape_code
-    raise InvalidColr(value) from ex
-colr.colr.InvalidColr: Expecting colr name/value:
-    hex   ([#]rgb/[#]rrggbb),
-    name  (white/black/etc.),
-    rgb   (0-255, 0-255, 0-255),
-    value (0-255)
-    Got: (256, 180, 212)
-```
-
-```
-Traceback (most recent call last):
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1496, in get_escape_code
-    escapecode = converter(value)
-                 ^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 324, in format_fore
-    return _format_code(
-           ^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 285, in _format_code
-    raise InvalidColr(
-colr.colr.InvalidColr: RGB value for fore not in range 0-255.
-    Got: (256, 252, 252)
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 340, in <module>
-    main()
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 321, in main
+  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 3
+21, in main
     colors = generate_palette(session, methods)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 272, in generate_palette
-    term_display(payload, img, colors, methods)
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 229, in term_display
-    display_pal(img, method)
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 238, in display_pal
-    [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in pal])
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 238, in <listcomp>
-    [str(Colr().rgb(r, g, b, "\u2584")) for r, g, b in pal])
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1852, in rgb
-    return self.chained(text=text, fore=(r, g, b), back=back, style=style)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1364, in chained
-    self.color(text=text, fore=fore, back=back, style=style),
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1410, in color
-    self.color_code(fore=fore, back=back, style=style),
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1427, in color_code
-    code = self.get_escape_code(stype, stylearg)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jesse/.local/lib/python3.11/site-packages/colr/colr.py", line 1498, in get_escape_code
-    raise InvalidColr(value) from ex
-colr.colr.InvalidColr: Expecting colr name/value:
-    hex   ([#]rgb/[#]rrggbb),
-    name  (white/black/etc.),
-    rgb   (0-255, 0-255, 0-255),
-    value (0-255)
-    Got: (256, 252, 252)
+  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 2
+45, in generate_palette
+    payload = get_info_from_last_scrobble()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jesse/projects/album_art_bottle_LEDs/plasma_client.py", line 1
+55, in get_info_from_last_scrobble
+    last_track = response.json()['recenttracks']['track'][0]
+                 ~~~~~~~
 ```

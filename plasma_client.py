@@ -128,7 +128,9 @@ def extract_dominant_colors4(image):
 
     # Generate a palette using this library!
     palette = color_thief.get_palette(color_count=NUM_COLORS, quality=1)
-    return palette
+    # Sometimes this method returns values > 255...
+    ret = [(min(c[0], 255), min(c[1], 255), min(c[2], 255)) for c in palette]
+    return ret
 
 def get_info_from_last_scrobble():
     """ Get the most recent track from a user's last.fm profile

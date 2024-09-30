@@ -25,12 +25,18 @@ load_dotenv()
 API_KEY = os.getenv("APP_API_KEY")  # a last.fm API_KEY
 USER = os.getenv("APP_USER")        # a last.fm username
 NUM_LEDS = 50                       # full number of LEDs
-NUM_COLORS = 50                     # number of colors to extract
-SERVER_IP = "192.168.0.92"          # ip of your pico
 SORT_COLORS = True                  # Try enabling/disabling
 SONG_CMD = 'mpc current'            # replace based on your setup!
 SLEEP_TIME = 1                      # How frequently you check for a new song
 COLOR_EXT_METHOD = 3                # Which color extraction method to use
+
+# 50 LED light string
+#NUM_COLORS = 50                     # number of colors to extract
+#SERVER_IP = "192.168.0.92"          # ip of your pico
+
+# 50 LED "Jar of lights"
+NUM_COLORS = 50                     # number of colors to extract
+SERVER_IP = "192.168.0.104"          # ip of your pico
 
 # You shouldn't need to change these...
 ENDPOINT = 'https://ws.audioscrobbler.com/2.0/'

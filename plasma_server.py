@@ -11,7 +11,6 @@ import uasyncio
 # Adjust these based on your hardware / preferences
 PORT = 10191
 NUM_LEDS = 50
-ANIMATION_DELAY = 1
 TRANSITION_DELAY = 0.005
 
 # Initialize WS2812 / NeoPixel™ LEDs
@@ -22,6 +21,7 @@ led_strip = plasma.WS2812(
 led_strip.start()
 
 # Define some global variables
+DELAY = 1.0 # initial delay; gets overriden by updates!
 lock = None
 new_palette = None
 
@@ -64,14 +64,18 @@ def net_thread():
         # Receive and parse the request
         request = s.recvfrom(2048)
         
-        data = json.loads(request[0])
+        payload = json.loads(request[0])
         
         # try to acquire lock - wait if in use
         lock.acquire()
         
         # Update the Palette!
         global new_palette
-        new_palette = data
+        new_palette = payload['colors']
+
+        # Update the delay timing
+        global DELAY
+        DELAY = payload['delay']
 
         # release lock
         lock.release()
@@ -81,6 +85,7 @@ def display_thread():
     """ Handle the LED updates """
     global lock
     global new_palette
+    global DELAY
     
     current_palette = [[0, 255, 0] for _ in range(NUM_LEDS)]
     new_pal = None
@@ -130,7 +135,7 @@ def display_thread():
             led_strip.set_rgb((i + counter) % NUM_LEDS, r, g, b)
             
         if new_pal == None:
-            time.sleep(ANIMATION_DELAY)
+            time.sleep(DELAY)
         else:
             time.sleep(TRANSITION_DELAY)
         counter += 1

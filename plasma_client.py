@@ -27,6 +27,7 @@ USER = os.getenv("APP_USER")        # a last.fm username
 NUM_LEDS = 50                       # full number of LEDs
 SORT_COLORS = True                  # Try enabling/disabling
 SONG_CMD = 'mpc current'            # replace based on your setup!
+BPM_CMD = "current_bpm"             # replace based on your setup; set to None if you don't want to control BPM
 SLEEP_TIME = 1                      # How frequently you check for a new song
 COLOR_EXT_METHOD = 3                # Which color extraction method to use
 
@@ -321,6 +322,17 @@ def main():
 
         # Don't bother hitting the API unless the song has changed
         if song != last_song:
+
+            # get the current BPM
+            if BPM_CMD:
+                result = subprocess.run(
+                        BPM_CMD.split(" "),
+                        stdout=subprocess.PIPE)
+                delay = float(result.stdout)
+            else:
+                delay = 1.0
+            #print("delay = %s" % delay)
+
             # Sleep for 3 seconds so the update makes it to last.fm
             time.sleep(3)
             print("Updating...")
@@ -328,8 +340,13 @@ def main():
             # Get the palette
             colors = generate_palette(session, methods)
 
+            payload = {
+                    "colors": colors,
+                    "delay": delay
+                    }
+
             # convert to json...
-            data_string = json.dumps(colors).encode()
+            data_string = json.dumps(payload).encode()
 
             # ...and send to the server!
             #

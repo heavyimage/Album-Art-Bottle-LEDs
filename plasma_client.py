@@ -29,7 +29,7 @@ SORT_COLORS = True                  # Try enabling/disabling
 SONG_CMD = 'mpc current'            # replace based on your setup!
 BPM_CMD = "current_bpm"             # replace based on your setup; set to None if you don't want to control BPM
 SLEEP_TIME = 1                      # How frequently you check for a new song
-COLOR_EXT_METHOD = 3                # Which color extraction method to use
+COLOR_EXT_METHOD = 1                # Which color extraction method to use
 
 # 50 LED "Jar of lights"
 SERVER_IP = "192.168.0.104"         # ip of your pico JAR

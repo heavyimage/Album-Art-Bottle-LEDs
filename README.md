@@ -16,6 +16,7 @@ By combining code for API access, dominant color extraction, NeoPixel updates an
 * A last.fm account to pull from
 * A last.fm API key
 * A CLI tool for checking the currently playing song (eg mpc/mpd)
+* [Optional] A means of detecting BPM
 
 ### Workflow
 
@@ -44,6 +45,32 @@ The server code, running on the pico, is resonsible for:
 	* It'll glow green when it's ready for a client connection
 * Run the client code (once you add the API key and username) on a 'real' computer to send palettes to the server
 
+### BPM support
+If you set a `BPM_CMD` you should be able to have the lights pulse at the BPM of the audio!
+
+I use a shell script like this:
+```bash
+#!/bin/bash
+BPMPATH=`which bpm`
+FFMPEGPATH=`which ffmpeg`
+BCPATH=`which bc`
+
+BASE=/mnt/media/music/music
+PATH=`mpc status --format "%file%" | head -n1`
+
+FULLPATH=$BASE/$PATH
+
+# convert to raw audio using ffmpeg + measure bpm!
+# Thanks https://gist.github.com/brimston3/34dbb439442a723313b019b92931887b !
+bpm=$($FFMPEGPATH -hide_banner -loglevel error -vn -i "$FULLPATH" -ar 44100 -ac 1 -f f32le pipe:1 | $BPMPATH)
+#echo "BPM=$bpm"
+
+# Calculate Delay
+delay=$($BCPATH -l <<< 60.0/$bpm)
+#echo "Delay=$delay"
+echo $delay
+```
+
 ### Good Stuff
 * Proud of janky palette transition logic; exciting when songs switch!
 * Gentle animation is nice
@@ -53,7 +80,6 @@ The server code, running on the pico, is resonsible for:
 * Pretty pleased by the threading code on the pico for handling animation and network updates :-)
 
 ### Future Work
-* Would be AWESOME to change the animation speed based on the BPM of the song but this isn't available in the last.fm API!  I'd probably need to bridge in another API...
 * It's possible having all the LEDs stuff into a bottle isn't given the best sense of the palette -- might look cool mounted on a wall or somewhere else!
 
 ## Phase 2
@@ -70,9 +96,6 @@ Here are a few ideas I have for future improvements...
     * API retries?
 		* more interesting fake patterns if missing a song!
     * extract hues rather than brightnesses?
-    * detect bpm?
-        * <https://support.last.fm/t/is-there-a-showcase-of-api-uses/89878/8>
-        * <https://acousticbrainz.org/099b148e-fe99-4b79-be6e-5078e4bb7415?n=1>
 
 * server:
     * More interesting animation patterns?

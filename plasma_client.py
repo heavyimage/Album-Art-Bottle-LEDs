@@ -31,13 +31,15 @@ BPM_CMD = "current_bpm"             # replace based on your setup; set to None i
 SLEEP_TIME = 1                      # How frequently you check for a new song
 COLOR_EXT_METHOD = 3                # Which color extraction method to use
 
-# 50 LED light string
-#NUM_COLORS = 50                     # number of colors to extract
-#SERVER_IP = "192.168.0.92"          # ip of your pico
-
 # 50 LED "Jar of lights"
+SERVER_IP = "192.168.0.104"         # ip of your pico JAR
+NUM_LEDS = 50                       # full number of LEDs
 NUM_COLORS = 50                     # number of colors to extract
-SERVER_IP = "192.168.0.104"          # ip of your pico
+
+# 50 LED light string
+#SERVER_IP = "192.168.0.97"         # ip of your pico HALLWAY
+#NUM_LEDS = 66                      # full number of LEDs
+#NUM_COLORS = 66                    # number of colors to extract
 
 # You shouldn't need to change these...
 ENDPOINT = 'https://ws.audioscrobbler.com/2.0/'
